@@ -1,44 +1,4 @@
 # dependencies
 /node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# production
-/build
-
-# misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-/.vscode
-.idea/modules.xml
-.idea/vcs.xml
-.idea/ip-centrex-admin-portal.iml
-.idea/.gitignore
-/.idea/inspectionProfiles/Project_Default.xml
-
-#logo
-./logo.png
-allure-results
-allure-report
-.idea/prettier.xml
-
-#e2e
-entrypoint.conf.js
-/.idea/jsLinters/eslint.xml
-
-src/config.json
-/public/custom-logo.svg
-/logo.svg
-/public/logo.svg
+/.expo
+.expo
