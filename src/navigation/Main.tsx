@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { List } from "../screens/List";
-import { TextDemo } from "../screens/Demos";
+import { Details } from "../screens/Details";
 import { LeagueType } from "../store/reducers/general";
 import { GET_ALL_LEAGUES_INFORMATION } from "../store/constants/actionTypes";
 
@@ -48,8 +48,10 @@ export const Main = () => {
                     <MainStack.Screen
                         key={e.id}
                         name={e.slug as keyof MainStackParams}
-                        component={TextDemo}
-                        options={{ headerTitle: e.name }}
+                        component={Details}
+                        options={{
+                            headerTitle: e.name,
+                        }}
                     />
                 );
             })}

@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useSelector, useDispatch } from "react-redux";
-import colors from "../constants/colors";
 import { ListItem, ListSeparator } from "../components/List";
 import { MainStackParams } from "../navigation/Main";
 import { LeagueType } from "../store/reducers/general";
@@ -79,7 +78,9 @@ export const List = ({ navigation }: Props) => {
                     title={item.title}
                     subtitle={item.subtitle}
                     image={item.image}
-                    onPress={() => navigation.navigate(item.target)}
+                    onPress={() =>
+                        navigation.navigate(item.target, { id: item.id })
+                    }
                     id={item.id}
                 />
             )}
@@ -121,7 +122,7 @@ export const List = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.background,
+        backgroundColor: "#eef0f3",
     },
     button: {
         alignItems: "center",
