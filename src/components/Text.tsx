@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     color: colors.gray,
     fontSize: 20,
     marginBottom: 12,
-    marginTop: -12, // assum this shows up under a headerText
+    marginTop: -12, 
   },
 });
 
