@@ -1,4 +1,3 @@
-import { store } from './createStore';
-import * as actions from './actions';
+import { store } from "./createStore";
 
-export { store, actions };
+export { store };

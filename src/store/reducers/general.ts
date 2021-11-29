@@ -58,7 +58,6 @@ export default (
                 ],
             };
         case SHOW_FAVOURITES:
-            console.log(action.payload);
             return {
                 ...state,
                 leagues:

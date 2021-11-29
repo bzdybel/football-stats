@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState } from "react";
 import {
     StyleSheet,
     FlatList,
@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useSelector, useDispatch } from "react-redux";
-import colors from "../constants/colors";
 import { ListItem, ListSeparator } from "../components/List";
 import { MainStackParams } from "../navigation/Main";
 import { LeagueType } from "../store/reducers/general";
@@ -39,11 +38,16 @@ export const List = ({ navigation }: Props) => {
     };
     const onChangeText = (text: string) => {
         onFilterChange(text);
-        const leaguesCopy = [...leagues].filter(
+        const correctLeague = isEnabled
+            ? [...favouriteLeagues]
+            : [...originalLeagues];
+
+        const leaguesCopy = correctLeague.filter(
             (e: LeagueType) =>
                 e.name.toLowerCase().includes(text.toLowerCase()) ||
                 e.abbr.toLowerCase().includes(text.toLowerCase())
         );
+
         dispatch({
             type: SET_LEAGUES,
             payload:
@@ -79,7 +83,9 @@ export const List = ({ navigation }: Props) => {
                     title={item.title}
                     subtitle={item.subtitle}
                     image={item.image}
-                    onPress={() => navigation.navigate(item.target)}
+                    onPress={() =>
+                        navigation.navigate(item.target, { id: item.id })
+                    }
                     id={item.id}
                 />
             )}
@@ -121,7 +127,7 @@ export const List = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.background,
+        backgroundColor: "#eef0f3",
     },
     button: {
         alignItems: "center",
@@ -129,10 +135,11 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 10,
         borderRadius: 20,
-        elevation: 3,
-        border: "2px solid #800080",
+        borderColor: "#800080",
+        borderWidth: 2,
         marginLeft: 15,
-        width: 200,
+        width: "45%",
+        maxWidth: 200,
     },
     text: {
         fontSize: 16,
@@ -157,10 +164,13 @@ const styles = StyleSheet.create({
         margin: 12,
         borderWidth: 1,
         padding: 10,
+        width: "45%",
+        maxWidth: 200,
     },
     row: {
         flex: 1,
         flexDirection: "row",
         alignItems: "center",
+        width: "100%",
     },
 });
