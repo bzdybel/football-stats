@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState } from "react";
 import {
     StyleSheet,
     FlatList,
@@ -38,11 +38,16 @@ export const List = ({ navigation }: Props) => {
     };
     const onChangeText = (text: string) => {
         onFilterChange(text);
-        const leaguesCopy = [...leagues].filter(
+        const correctLeague = isEnabled
+            ? [...favouriteLeagues]
+            : [...originalLeagues];
+
+        const leaguesCopy = correctLeague.filter(
             (e: LeagueType) =>
                 e.name.toLowerCase().includes(text.toLowerCase()) ||
                 e.abbr.toLowerCase().includes(text.toLowerCase())
         );
+
         dispatch({
             type: SET_LEAGUES,
             payload:
@@ -130,10 +135,11 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 10,
         borderRadius: 20,
-        elevation: 3,
-        border: "2px solid #800080",
+        borderColor: "#800080",
+        borderWidth: 2,
         marginLeft: 15,
-        width: 200,
+        width: "45%",
+        maxWidth: 200,
     },
     text: {
         fontSize: 16,
@@ -158,10 +164,13 @@ const styles = StyleSheet.create({
         margin: 12,
         borderWidth: 1,
         padding: 10,
+        width: "45%",
+        maxWidth: 200,
     },
     row: {
         flex: 1,
         flexDirection: "row",
         alignItems: "center",
+        width: "100%",
     },
 });

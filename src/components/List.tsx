@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { View, StyleSheet, TouchableHighlight, Image } from "react-native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import colors from "../constants/colors";
 import { useDispatch, useSelector } from "react-redux";
 import {
     ADD_LEAGUE_TO_FAVOURITE,
@@ -17,17 +16,14 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: 15,
         paddingVertical: 10,
-        backgroundColor: colors.white,
-        "&:hover": {
-            cursor: "pointer",
-        },
+        backgroundColor: "rgb(255, 255, 255)",
     },
     titleText: {
         fontWeight: "bold",
     },
     separator: {
         height: StyleSheet.hairlineWidth,
-        backgroundColor: colors.border,
+        backgroundColor: "#eef0f3",
     },
     image: {
         height: 50,

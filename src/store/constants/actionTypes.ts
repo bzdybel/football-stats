@@ -5,3 +5,5 @@ export const SHOW_FAVOURITES = "SHOW_FAVOURITES";
 export const SHOW_ALL = "SHOW_ALL";
 export const SET_LEAGUES = "SET_LEAGUES";
 export const GET_LEAGUE_DETAILS = "GET_LEAGUE_DETAILS";
+export const GET_SEASONS = "GET_SEASONS";
+export const GET_STANDINGS = "GET_STANDINGS";
