@@ -1,17 +1,21 @@
-import React, { useMemo } from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import React, { useMemo, useContext } from "react";
+import { Text } from "react-native";
 import { StandingType, Stat } from "../store/reducers/details";
 import { Accordion } from "react-bootstrap";
+import { Col, Row, Image } from "react-bootstrap";
+import { ThemeContext } from "../index";
 
 export default function StandingsList({
     standings,
 }: {
     standings: StandingType[];
 }) {
+    const { isDarkMode } = useContext(ThemeContext);
+
     const headerStats = ["Wins", "Losses", "Draws", "Overall"];
     const screens = useMemo(
         () =>
-            standings?.map((e: StandingType) => {
+            standings?.map((e: any) => {
                 return {
                     title: e.team.name,
                     image: e.team.logos[0].href,
@@ -31,71 +35,136 @@ export default function StandingsList({
         <Accordion style={{ width: "90%" }}>
             {screens.map((item) => {
                 return (
-                    <Accordion.Item eventKey={item.id}>
-                        <Accordion.Header>
-                            <Image
-                                style={[styles.image]}
-                                source={{ uri: item.image }}
-                            />
-                            <View style={[styles.wrapper]}>
-                                <Text style={[styles.titleText]}>
-                                    {item.title}
-                                </Text>
-                                <Text>{item.subtitle}</Text>
-                            </View>
-                            <View style={[styles.wrapper]}>
-                                <View style={[styles.rowList]}>
-                                    {headerStats.map((name) => {
-                                        return (
-                                            <View style={{ minWidth: 100 }}>
-                                                <Text
-                                                    style={[styles.titleText]}
-                                                >
-                                                    {name}
-                                                </Text>
-                                                <Text>
-                                                    {
-                                                        item.stats.find(
-                                                            (e) =>
-                                                                e.name == name
-                                                        )?.value
-                                                    }
-                                                </Text>
-                                            </View>
-                                        );
-                                    })}
-                                </View>
-                            </View>
+                    <Accordion.Item
+                        style={{ background: isDarkMode ? "#000000c0" : "" }}
+                        eventKey={item.id}
+                    >
+                        <Accordion.Header
+                            bsPrefix={`${
+                                isDarkMode ? "accordion-custom-dark" : ""
+                            }`}
+                        >
+                            <Row className="w-100">
+                                <Col xs={4} md={2} lg={2}>
+                                    <Image
+                                        style={{ width: "5rem" }}
+                                        src={item.image}
+                                    />
+                                </Col>
+                                <Col xs={8} md={4} lg={4}>
+                                    <h5
+                                        className={`${
+                                            isDarkMode
+                                                ? "text-secondary"
+                                                : "text-dark"
+                                        }`}
+                                    >
+                                        {item.title}
+                                    </h5>
+                                    <h6
+                                        className={`${
+                                            isDarkMode
+                                                ? "text-light"
+                                                : "text-secondary"
+                                        }`}
+                                    >
+                                        {item.subtitle}
+                                    </h6>
+                                </Col>
+                                <Col xs={12} md={6} lg={6}>
+                                    <Row className="d-flex p-3">
+                                        {headerStats.map((name) => {
+                                            return (
+                                                <Col>
+                                                    <Text>
+                                                        <div
+                                                            className={`${
+                                                                isDarkMode
+                                                                    ? "text-secondary"
+                                                                    : "text-dark"
+                                                            }`}
+                                                        >
+                                                            {name}
+                                                        </div>
+                                                    </Text>
+                                                    <Text>
+                                                        <div
+                                                            className={`${
+                                                                isDarkMode
+                                                                    ? "text-light"
+                                                                    : "text-secondary"
+                                                            }`}
+                                                        >
+                                                            {
+                                                                item.stats.find(
+                                                                    (e: {
+                                                                        name: string;
+                                                                        value: string;
+                                                                    }) =>
+                                                                        e.name ==
+                                                                        name
+                                                                )?.value
+                                                            }
+                                                        </div>
+                                                    </Text>
+                                                </Col>
+                                            );
+                                        })}
+                                    </Row>
+                                </Col>
+                            </Row>
                         </Accordion.Header>
                         <Accordion.Body>
-                            <View style={[styles.rowList]}>
+                            <Row className="d-flex p-3">
                                 {item.stats
                                     .filter(
-                                        (elem) =>
-                                            !headerStats.includes(elem.name)
+                                        (elem: {
+                                            name: string;
+                                            value: string;
+                                        }) => !headerStats.includes(elem.name)
                                     )
-                                    .map((e) => {
-                                        return (
-                                            <View
-                                                style={{
-                                                    minWidth: 150,
-                                                    margin: 10,
-                                                }}
-                                            >
-                                                <Text
-                                                    style={[styles.titleText]}
+                                    .map(
+                                        (e: {
+                                            name: string;
+                                            value: string;
+                                        }) => {
+                                            return (
+                                                <Col
+                                                    className="pb-3"
+                                                    xs={6}
+                                                    md={4}
+                                                    lg={2}
                                                 >
-                                                    {e.name}
-                                                </Text>
-                                                <Text>
-                                                    {e?.value?.length > 0
-                                                        ? e.value
-                                                        : "-"}
-                                                </Text>
-                                            </View>
-                                        );
-                                    })}
-                            </View>
+                                                    <Text>
+                                                        <div
+                                                            className={`${
+                                                                isDarkMode
+                                                                    ? "text-secondary"
+                                                                    : "text-dark"
+                                                            }`}
+                                                        >
+                                                            {e.name}
+                                                        </div>
+                                                    </Text>
+                                                    <Text>
+                                                        <div
+                                                            className={`${
+                                                                isDarkMode
+                                                                    ? "text-light"
+                                                                    : "text-secondary"
+                                                            }`}
+                                                        >
+                                                            {e?.value?.length >
+                                                            0
+                                                                ? e.value
+                                                                : "-"}
+                                                        </div>
+                                                    </Text>
+                                                </Col>
+                                            );
+                                        }
+                                    )}
+                            </Row>
                         </Accordion.Body>
                     </Accordion.Item>
                 );
@@ -103,79 +172,3 @@ export default function StandingsList({
         </Accordion>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#eef0f3",
-        maxHeight: "40rem",
-        width: "95%",
-    },
-    button: {
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 20,
-        borderColor: "#800080",
-        borderWidth: 2,
-        marginLeft: 15,
-        width: "45%",
-        maxWidth: 200,
-    },
-    text: {
-        fontSize: 16,
-        lineHeight: 21,
-        fontWeight: "bold",
-        letterSpacing: 0.25,
-    },
-    enabled: {
-        backgroundColor: "#800080",
-    },
-    disabled: {
-        backgroundColor: "transparent",
-    },
-    enabledText: {
-        color: "white",
-    },
-    disabledText: {
-        color: "black",
-    },
-    input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        width: "45%",
-        maxWidth: 200,
-    },
-    row: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        width: "100%",
-    },
-    rowList: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        flexWrap: "wrap",
-    },
-    titleText: {
-        fontWeight: "bold",
-    },
-    separator: {
-        height: StyleSheet.hairlineWidth,
-        backgroundColor: "#000000c0",
-    },
-    image: {
-        height: 50,
-        width: 50,
-        marginRight: 15,
-    },
-    wrapper: {
-        minWidth: 300,
-    },
-});

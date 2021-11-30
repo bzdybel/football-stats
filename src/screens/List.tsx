@@ -1,15 +1,7 @@
-import React, { useMemo, useState } from "react";
-import {
-    StyleSheet,
-    FlatList,
-    TouchableHighlight,
-    Text,
-    TextInput,
-    View,
-} from "react-native";
+import React, { useMemo, useState, useContext } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useSelector, useDispatch } from "react-redux";
-import { ListItem, ListSeparator } from "../components/List";
+import { ListItem } from "../components/List";
 import { MainStackParams } from "../navigation/Main";
 import { LeagueType } from "../store/reducers/general";
 import {
@@ -17,6 +9,8 @@ import {
     SHOW_ALL,
     SET_LEAGUES,
 } from "../store/constants/actionTypes";
+import { ListGroup, Col, Row, Button, Form } from "react-bootstrap";
+import { ThemeContext } from "../index";
 
 type Props = {
     navigation: StackNavigationProp<MainStackParams, "Leagues">;
@@ -24,6 +18,8 @@ type Props = {
 
 export const List = ({ navigation }: Props) => {
     const dispatch = useDispatch();
+    const { isDarkMode } = useContext(ThemeContext);
+
     const { leagues, originalLeagues, favouriteLeagues } = useSelector(
         (state: any) => state.general
     );
@@ -74,103 +70,81 @@ export const List = ({ navigation }: Props) => {
     );
 
     return (
-        <FlatList
-            style={styles.container}
-            data={screens}
-            keyExtractor={(item) => item.title}
-            renderItem={({ item }) => (
-                <ListItem
-                    title={item.title}
-                    subtitle={item.subtitle}
-                    image={item.image}
-                    onPress={() =>
-                        navigation.navigate(item.target, { id: item.id })
-                    }
-                    id={item.id}
-                />
-            )}
-            ItemSeparatorComponent={ListSeparator}
-            ListHeaderComponent={
-                <View style={[styles.row]}>
-                    <TouchableHighlight
-                        activeOpacity={0.6}
-                        underlayColor="#800080"
-                        style={[
-                            styles.button,
-                            isEnabled ? styles.enabled : styles.disabled,
-                        ]}
-                        onPress={toggleSwitch}
-                    >
-                        <Text
-                            style={[
-                                styles.text,
-                                isEnabled
-                                    ? styles.enabledText
-                                    : styles.disabledText,
-                            ]}
+        <>
+            <div style={{ background: isDarkMode ? "#010409" : "" }}>
+                <Row className="d-flex p-3 align-items-center">
+                    <Col xs={6}>
+                        <Button
+                            className="w-100"
+                            onClick={toggleSwitch}
+                            variant={`${
+                                isDarkMode
+                                    ? isEnabled
+                                        ? "dark"
+                                        : "outline-dark"
+                                    : isEnabled
+                                    ? "info"
+                                    : "outline-info"
+                            }`}
+                            style={{ color: isDarkMode ? "#FFF" : "" }}
                         >
                             {"Show favourites"}
-                        </Text>
-                    </TouchableHighlight>
-                    <TextInput
-                        style={styles.input}
-                        onChangeText={(e) => onChangeText(e)}
-                        value={filterValue}
-                    />
-                </View>
-            }
-            ListFooterComponent={ListSeparator}
-        />
+                        </Button>
+                    </Col>
+                    <Col className="ms-n6 align-items-center" xs={6}>
+                        <Form>
+                            <Form.Group>
+                                <Form.Control
+                                    style={{
+                                        background: isDarkMode ? "#010409" : "",
+                                        borderColor: isDarkMode
+                                            ? "#30363d"
+                                            : "",
+                                    }}
+                                    type="text"
+                                    placeholder="Search by name"
+                                    value={filterValue}
+                                    onChange={(e) =>
+                                        onChangeText(e.target.value)
+                                    }
+                                />
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                </Row>
+            </div>
+            <ListGroup
+                style={{
+                    height: "100%",
+                    backgroundColor: isDarkMode ? "#0d1117" : "",
+                    borderColor: isDarkMode ? "#30363d" : "",
+                }}
+            >
+                {screens.map((item: any) => {
+                    return (
+                        <ListGroup.Item
+                            key={item.id}
+                            style={{
+                                cursor: "pointer",
+                                backgroundColor: isDarkMode ? "#0d1117" : "",
+                                borderColor: isDarkMode ? "#30363d" : "",
+                            }}
+                            onClick={() =>
+                                navigation.navigate(item.target, {
+                                    id: item.id,
+                                })
+                            }
+                        >
+                            <ListItem
+                                title={item.title}
+                                subtitle={item.subtitle}
+                                image={item.image}
+                                id={item.id}
+                            />
+                        </ListGroup.Item>
+                    );
+                })}
+            </ListGroup>
+        </>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#eef0f3",
-    },
-    button: {
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 20,
-        borderColor: "#800080",
-        borderWidth: 2,
-        marginLeft: 15,
-        width: "45%",
-        maxWidth: 200,
-    },
-    text: {
-        fontSize: 16,
-        lineHeight: 21,
-        fontWeight: "bold",
-        letterSpacing: 0.25,
-    },
-    enabled: {
-        backgroundColor: "#800080",
-    },
-    disabled: {
-        backgroundColor: "transparent",
-    },
-    enabledText: {
-        color: "white",
-    },
-    disabledText: {
-        color: "black",
-    },
-    input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        width: "45%",
-        maxWidth: 200,
-    },
-    row: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        width: "100%",
-    },
-});

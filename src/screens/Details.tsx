@@ -1,22 +1,30 @@
-import React, { useState, useCallback, useLayoutEffect } from "react";
-import {
-    ImageBackground,
-    StyleSheet,
-    View,
-    Text,
-    ActivityIndicator,
-} from "react-native";
+import React, {
+    useState,
+    useCallback,
+    useLayoutEffect,
+    useContext,
+} from "react";
+import { ImageBackground, ActivityIndicator } from "react-native";
 import axios from "axios";
 import {
     GET_LEAGUE_DETAILS,
     GET_SEASONS,
     GET_STANDINGS,
+    API_URL,
 } from "../store/constants/actionTypes";
 import { LeagueType } from "../store/reducers/general";
 import { StandingType } from "../store/reducers/details";
 import { useSelector, useDispatch } from "react-redux";
-import SelectDropdown from "react-native-select-dropdown";
 import StandingsList from "../components/Standings";
+import {
+    Container,
+    Col,
+    Dropdown,
+    DropdownButton,
+    Badge,
+} from "react-bootstrap";
+import { ThemeContext } from "../index";
+
 export const api = axios.create();
 
 type Props = {
@@ -29,7 +37,6 @@ type Props = {
         path?: any;
     };
 };
-
 type Season = {
     name: string;
     desc: string;
@@ -46,32 +53,34 @@ type Standings = {
 
 export const Details = ({ route }: Props) => {
     const dispatch = useDispatch();
+    const { isDarkMode } = useContext(ThemeContext);
     const { leagueDetails, seasons, standings } = useSelector(
         (state: any) => state.details
     );
+
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const fetchAvailableSeasons = useCallback(async () => {
         setIsLoading(true);
-        api.get(
-            `https://api-football-standings.azharimm.site/leagues/${route.params.id}/seasons`
-        ).then(function (response) {
+        api.get(`${API_URL}/leagues/${route.params.id}/seasons`).then(function (
+            response
+        ) {
             saveSeasons(response.data.data);
         });
     }, []);
 
     const fetchLeagueDetails = useCallback(async () => {
         setIsLoading(true);
-        api.get(
-            `https://api-football-standings.azharimm.site/leagues/${route.params.id}`
-        ).then(function (response) {
+        api.get(`${API_URL}/leagues/${route.params.id}`).then(function (
+            response
+        ) {
             saveData(response.data.data);
         });
     }, []);
 
     const fetchStandings = useCallback(async (season: number) => {
         api.get(
-            `https://api-football-standings.azharimm.site/leagues/${route.params.id}/standings?season=${season}&sort=asc`
+            `${API_URL}/leagues/${route.params.id}/standings?season=${season}&sort=asc`
         ).then(function (response) {
             saveStandings(response.data.data);
         });
@@ -105,114 +114,85 @@ export const Details = ({ route }: Props) => {
     }, [fetchLeagueDetails, fetchAvailableSeasons]);
 
     return (
-        <View style={styles.container}>
-            <View style={styles.container}>
-                {isLoading ? (
-                    <View style={[styles.indicator, styles.horizontal]}>
-                        <ActivityIndicator size="large" color="#DAA520" />
-                    </View>
-                ) : (
-                    <ImageBackground
-                        source={{ uri: leagueDetails?.logos?.light }}
-                        resizeMode="contain"
-                        style={styles.image}
+        <Container style={{ minWidth: "100%" }} className="m-0 p-0 h-100">
+            {isLoading ? (
+                <Container className="h-100 d-flex align-items-center justify-content-center text-warning">
+                    <ActivityIndicator size="large" color="#DAA520" />
+                </Container>
+            ) : (
+                <ImageBackground
+                    source={{
+                        uri: isDarkMode
+                            ? leagueDetails?.logos?.dark
+                            : leagueDetails?.logos?.light,
+                    }}
+                    resizeMode="contain"
+                    style={{ height: "100%" }}
+                >
+                    <Container
+                        className="h-100 m-0"
+                        style={{ background: "#000000c0", minWidth: "100%" }}
                     >
-                        <View style={styles.containerWrapper}>
-                            <Text style={styles.text}>
-                                {leagueDetails.name}
-                            </Text>
-                            <View style={styles.selectWrapper}>
-                                <SelectDropdown
-                                    data={seasons}
-                                    onSelect={(selectedItem) =>
-                                        onSelectSeason(selectedItem)
-                                    }
-                                    buttonTextAfterSelection={(selectedItem) =>
-                                        selectedItem.displayName
-                                    }
-                                    rowTextForSelection={(item) =>
-                                        item.displayName
-                                    }
-                                    dropdownStyle={styles.dropdown}
-                                    buttonStyle={styles.buttonStyle}
-                                    rowStyle={styles.rowStyle}
-                                    rowTextStyle={styles.rowTextStyle}
-                                    buttonTextStyle={styles.buttonTextStyle}
-                                />
+                        <Col
+                            className="d-flex align-items-center justify-content-center"
+                            xs={12}
+                        >
+                            <h1 className="m-3">
+                                <Badge pill bg="warning">
+                                    {leagueDetails.name}
+                                </Badge>
+                            </h1>
+                        </Col>
+                        <Col
+                            className="d-flex align-items-center justify-content-center mb-3"
+                            xs={12}
+                        >
+                            <DropdownButton
+                                id="dropdown-item-button"
+                                title="Dropdown button"
+                                variant={`${
+                                    isDarkMode ? "secondary" : "primary"
+                                }`}
+                            >
+                                <Container
+                                    style={{
+                                        maxHeight: "30rem",
+                                        overflow: "auto",
+                                    }}
+                                >
+                                    {seasons.map((season: any) => {
+                                        return (
+                                            <Dropdown.Item
+                                                value={season.year}
+                                                onClick={(e) =>
+                                                    onSelectSeason({
+                                                        year: Number(
+                                                            //@ts-ignore
+                                                            e.target.value
+                                                        ),
+                                                    })
+                                                }
+                                                as="button"
+                                            >
+                                                {season.displayName}
+                                            </Dropdown.Item>
+                                        );
+                                    })}
+                                </Container>
+                            </DropdownButton>
+                        </Col>
 
-                                {standings.length ? (
-                                    <StandingsList standings={standings} />
-                                ) : null}
-                            </View>
-                        </View>
-                    </ImageBackground>
-                )}
-            </View>
-        </View>
+                        {standings.length ? (
+                            <Col
+                                className="d-flex align-items-center justify-content-center"
+                                xs={12}
+                            >
+                                <StandingsList standings={standings} />
+                            </Col>
+                        ) : null}
+                    </Container>
+                </ImageBackground>
+            )}
+        </Container>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#FFF",
-    },
-    containerWrapper: {
-        flex: 1,
-        backgroundColor: "#000000c0",
-        height: "100%",
-    },
-    image: {
-        flex: 1,
-        justifyContent: "flex-start",
-    },
-
-    text: {
-        color: "#DAA520",
-        fontSize: 24,
-        lineHeight: 32,
-        fontWeight: "bold",
-        textAlign: "center",
-        paddingTop: 10,
-        marginBottom: 10,
-    },
-    dropdown: {
-        paddingVertical: 10,
-        minWidth: 320,
-    },
-    buttonStyle: {
-        margin: "0 10rem",
-        minWidth: 320,
-        borderRadius: 10,
-        backgroundColor: "transparent",
-        borderColor: "#FFF",
-        borderWidth: 3,
-        marginBottom: "1rem",
-    },
-    rowStyle: {
-        padding: 10,
-        flex: 1,
-        justifyContent: "flex-start",
-        minWidth: "100%",
-    },
-    selectWrapper: {
-        flex: 1,
-        alignItems: "center",
-    },
-    rowTextStyle: {
-        textAlign: "left",
-    },
-    buttonTextStyle: {
-        color: "#DAA520",
-    },
-    indicator: {
-        flex: 1,
-        justifyContent: "center",
-    },
-    horizontal: {
-        backgroundColor: "#000000c0",
-        flexDirection: "row",
-        justifyContent: "space-around",
-        padding: 10,
-    },
-});
