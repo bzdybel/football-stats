@@ -7,3 +7,4 @@ export const SET_LEAGUES = "SET_LEAGUES";
 export const GET_LEAGUE_DETAILS = "GET_LEAGUE_DETAILS";
 export const GET_SEASONS = "GET_SEASONS";
 export const GET_STANDINGS = "GET_STANDINGS";
+export const API_URL = "https://api-football-standings.azharimm.site";

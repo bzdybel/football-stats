@@ -1,32 +1,34 @@
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useContext } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { List } from "../screens/List";
 import { Details } from "../screens/Details";
 import { LeagueType } from "../store/reducers/general";
-import { GET_ALL_LEAGUES_INFORMATION } from "../store/constants/actionTypes";
+import {
+    GET_ALL_LEAGUES_INFORMATION,
+    API_URL,
+} from "../store/constants/actionTypes";
+import { Form } from "react-bootstrap";
+import { ThemeContext } from "../index";
 
 export const api = axios.create();
 
 export type MainStackParams = {
     Leagues: undefined;
-    TextDemo: undefined;
 };
 
 const MainStack = createStackNavigator<MainStackParams>();
 
 export const Main = () => {
     const dispatch = useDispatch();
-
     const { leagues } = useSelector((state: any) => state.general);
+    const { toggleDarkMode, isDarkMode } = useContext(ThemeContext);
 
     const fetchLeagueInformation = useCallback(async () => {
-        api.get("https://api-football-standings.azharimm.site/leagues").then(
-            function (response) {
-                saveData(response.data);
-            }
-        );
+        api.get(`${API_URL}/leagues`).then(function (response) {
+            saveData(response.data);
+        });
     }, []);
 
     const saveData = (data: LeagueType[]) =>
@@ -39,7 +41,24 @@ export const Main = () => {
     return (
         <MainStack.Navigator>
             <MainStack.Screen
-                options={{ title: "Leagues" }}
+                options={{
+                    title: "Leagues",
+                    headerTitleStyle: { color: isDarkMode ? "#FFF" : "" },
+                    headerStyle: {
+                        backgroundColor: isDarkMode ? "#0d1117" : "#FFF",
+                        borderBottomColor: isDarkMode ? "#30363d" : "",
+                    },
+                    headerRight: () => (
+                        <Form>
+                            <Form.Check
+                                onChange={toggleDarkMode}
+                                type="switch"
+                                id="custom-switch"
+                                checked={isDarkMode}
+                            />
+                        </Form>
+                    ),
+                }}
                 name="Leagues"
                 component={List}
             />
@@ -51,6 +70,30 @@ export const Main = () => {
                         component={Details}
                         options={{
                             headerTitle: e.name,
+                            headerTitleStyle: {
+                                color: isDarkMode ? "#FFF" : "",
+                            },
+                            headerStyle: {
+                                backgroundColor: isDarkMode
+                                    ? "#0d1117"
+                                    : "#FFF",
+                                borderBottomColor: isDarkMode ? "#30363d" : "",
+                            },
+                            cardStyle: {
+                                backgroundColor: isDarkMode
+                                    ? "#0d1117"
+                                    : "#FFF",
+                            },
+                            headerRight: () => (
+                                <Form>
+                                    <Form.Check
+                                        onChange={toggleDarkMode}
+                                        type="switch"
+                                        id="custom-switch"
+                                        checked={isDarkMode}
+                                    />
+                                </Form>
+                            ),
                         }}
                     />
                 );

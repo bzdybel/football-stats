@@ -1,58 +1,25 @@
-import React, { useCallback, useMemo } from "react";
-import { View, StyleSheet, TouchableHighlight, Image } from "react-native";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import React, { useCallback, useMemo, useContext } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
     ADD_LEAGUE_TO_FAVOURITE,
     REMOVE_LEAGUE_FROM_FAVOURITE,
 } from "../store/constants/actionTypes";
-import { Text } from "./Text";
 import { LeagueType } from "../store/reducers/general";
-
-const styles = StyleSheet.create({
-    row: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        backgroundColor: "rgb(255, 255, 255)",
-    },
-    titleText: {
-        fontWeight: "bold",
-    },
-    separator: {
-        height: StyleSheet.hairlineWidth,
-        backgroundColor: "#eef0f3",
-    },
-    image: {
-        height: 50,
-        width: 50,
-        marginRight: 15,
-    },
-    wrapper: {
-        minWidth: 300,
-    },
-});
+import { Col, Row, Image } from "react-bootstrap";
+import { ThemeContext } from "../index";
 
 type ListItemProps = {
     title: LeagueType["name"];
     subtitle: LeagueType["abbr"];
     image: LeagueType["logos"];
     id: LeagueType["id"];
-    onPress: () => void;
 };
 
-export const ListItem = ({
-    title,
-    subtitle,
-    onPress = () => null,
-    image,
-    id,
-}: ListItemProps) => {
+export const ListItem = ({ title, subtitle, image, id }: ListItemProps) => {
     const dispatch = useDispatch();
-    const rowStyles = [styles.row];
     const { favouriteLeagues } = useSelector((state: any) => state.general);
+    const { isDarkMode } = useContext(ThemeContext);
 
     const addToFavourites = useCallback((id: LeagueType["id"]) => {
         dispatch({ type: ADD_LEAGUE_TO_FAVOURITE, payload: { id } });
@@ -67,13 +34,28 @@ export const ListItem = ({
     }, [favouriteLeagues, id]);
 
     return (
-        <TouchableHighlight activeOpacity={0.6} onPress={onPress}>
-            <View style={rowStyles}>
-                <Image style={[styles.image]} source={{ uri: image.light }} />
-                <View style={[styles.wrapper]}>
-                    <Text style={[styles.titleText]}>{title}</Text>
-                    <Text>{subtitle}</Text>
-                </View>
+        <Row xs={12} md={8} lg={4}>
+            <Col xs={4} md={2} lg={1}>
+                <Image
+                    style={{ width: "5rem", minHeight: "5rem" }}
+                    src={isDarkMode ? image.dark : image.light}
+                />
+            </Col>
+            <Col xs={7} md={4} lg={3}>
+                <h5
+                    className={`${isDarkMode ? "text-secondary" : "text-dark"}`}
+                >
+                    {title}
+                </h5>
+                <h6
+                    className={`${
+                        isDarkMode ? "text-light" : "text-secondary"
+                    }`}
+                >
+                    {subtitle}
+                </h6>
+            </Col>
+            <Col className="d-flex align-items-center" xs={1}>
                 {isCurrentElementFavourite ? (
                     <Ionicons
                         name="heart-sharp"
@@ -89,9 +71,7 @@ export const ListItem = ({
                         color="#606060"
                     />
                 )}
-            </View>
-        </TouchableHighlight>
+            </Col>
+        </Row>
     );
 };
-
-export const ListSeparator = () => <View style={styles.separator} />;
