@@ -5,7 +5,7 @@ import {
     SHOW_FAVOURITES,
     SHOW_ALL,
     SET_LEAGUES,
-} from "../constants/actionTypes";
+} from "../constants/constants";
 
 export type LeagueType = {
     abbr: string;

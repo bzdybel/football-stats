@@ -2,7 +2,7 @@ import {
     GET_LEAGUE_DETAILS,
     GET_SEASONS,
     GET_STANDINGS,
-} from "../constants/actionTypes";
+} from "../constants/constants";
 
 export type LeagueType = {
     abbr: string;
@@ -35,14 +35,21 @@ export type StandingType = {
     };
     stats: Stat[];
 };
+
+export type SeasonType = {
+    displayName: string;
+    endDate: string;
+    types: [];
+    year: number;
+};
 export interface DetailsStateType {
-    leagueDetails: LeagueType | {};
-    seasons: [];
+    leagueDetails: LeagueType | null;
+    seasons: SeasonType[];
     standings: StandingType[];
 }
 
 export const initialState: DetailsStateType = {
-    leagueDetails: {},
+    leagueDetails: null,
     seasons: [],
     standings: [],
 };
