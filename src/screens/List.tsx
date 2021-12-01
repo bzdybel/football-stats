@@ -3,17 +3,26 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useSelector, useDispatch } from "react-redux";
 import { ListItem } from "../components/List";
 import { MainStackParams } from "../navigation/Main";
-import { LeagueType } from "../store/reducers/general";
+import { LeagueType, GeneralStateType } from "../store/reducers/general";
 import {
     SHOW_FAVOURITES,
     SHOW_ALL,
     SET_LEAGUES,
-} from "../store/constants/actionTypes";
+} from "../store/constants/constants";
 import { ListGroup, Col, Row, Button, Form } from "react-bootstrap";
 import { ThemeContext } from "../index";
+import { COLORS } from "../store/constants/colors";
+import { Entypo } from "@expo/vector-icons";
 
 type Props = {
     navigation: StackNavigationProp<MainStackParams, "Leagues">;
+};
+type League = {
+    title: LeagueType["name"];
+    subtitle: LeagueType["abbr"];
+    target: LeagueType["slug"];
+    image: LeagueType["logos"];
+    id: LeagueType["id"];
 };
 
 export const List = ({ navigation }: Props) => {
@@ -21,7 +30,7 @@ export const List = ({ navigation }: Props) => {
     const { isDarkMode } = useContext(ThemeContext);
 
     const { leagues, originalLeagues, favouriteLeagues } = useSelector(
-        (state: any) => state.general
+        (state: { general: GeneralStateType }) => state.general
     );
     const [isEnabled, setIsEnabled] = useState<boolean>(false);
     const [filterValue, onFilterChange] = useState<string>("");
@@ -71,7 +80,9 @@ export const List = ({ navigation }: Props) => {
 
     return (
         <>
-            <div style={{ background: isDarkMode ? "#010409" : "" }}>
+            <div
+                style={{ background: isDarkMode ? COLORS.black : COLORS.white }}
+            >
                 <Row className="d-flex p-3 align-items-center">
                     <Col xs={6}>
                         <Button
@@ -83,10 +94,12 @@ export const List = ({ navigation }: Props) => {
                                         ? "dark"
                                         : "outline-dark"
                                     : isEnabled
-                                    ? "info"
-                                    : "outline-info"
+                                    ? "warning"
+                                    : "outline-warning"
                             }`}
-                            style={{ color: isDarkMode ? "#FFF" : "" }}
+                            style={{
+                                color: isDarkMode ? COLORS.whiteSmoke : "",
+                            }}
                         >
                             {"Show favourites"}
                         </Button>
@@ -96,9 +109,11 @@ export const List = ({ navigation }: Props) => {
                             <Form.Group>
                                 <Form.Control
                                     style={{
-                                        background: isDarkMode ? "#010409" : "",
+                                        background: isDarkMode
+                                            ? COLORS.darkSecondary
+                                            : "",
                                         borderColor: isDarkMode
-                                            ? "#30363d"
+                                            ? COLORS.border
                                             : "",
                                     }}
                                     type="text"
@@ -114,36 +129,57 @@ export const List = ({ navigation }: Props) => {
                 </Row>
             </div>
             <ListGroup
-                style={{
-                    height: "100%",
-                    backgroundColor: isDarkMode ? "#0d1117" : "",
-                    borderColor: isDarkMode ? "#30363d" : "",
-                }}
+                className="h-100"
+                bsPrefix={isDarkMode ? "list-group-custom" : ""}
             >
-                {screens.map((item: any) => {
-                    return (
-                        <ListGroup.Item
-                            key={item.id}
-                            style={{
-                                cursor: "pointer",
-                                backgroundColor: isDarkMode ? "#0d1117" : "",
-                                borderColor: isDarkMode ? "#30363d" : "",
-                            }}
-                            onClick={() =>
-                                navigation.navigate(item.target, {
-                                    id: item.id,
-                                })
-                            }
-                        >
-                            <ListItem
-                                title={item.title}
-                                subtitle={item.subtitle}
-                                image={item.image}
-                                id={item.id}
+                {screens.length > 0 ? (
+                    screens.map((item: League) => {
+                        return (
+                            <ListGroup.Item
+                                key={item.id}
+                                className="p-3"
+                                bsPrefix={`pointer ${
+                                    isDarkMode
+                                        ? "list-group-item-black"
+                                        : "list-group-item-white"
+                                }`}
+                                onClick={() =>
+                                    //@ts-ignore
+                                    navigation.navigate(item.target, {
+                                        id: item.id,
+                                    })
+                                }
+                            >
+                                <ListItem
+                                    title={item.title}
+                                    subtitle={item.subtitle}
+                                    image={item.image}
+                                    id={item.id}
+                                />
+                            </ListGroup.Item>
+                        );
+                    })
+                ) : (
+                    <Col
+                        style={{ maxHeight: "15rem" }}
+                        className="w-100 d-flex flex-direction-column align-items-center justify-content-center"
+                    >
+                        <Row>
+                            <Entypo
+                                name="traffic-cone"
+                                size={86}
+                                color={COLORS.yellow}
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                }}
                             />
-                        </ListGroup.Item>
-                    );
-                })}
+                            <h1 className="d-flex justify-content-center">
+                                There is no data here
+                            </h1>
+                        </Row>
+                    </Col>
+                )}
             </ListGroup>
         </>
     );

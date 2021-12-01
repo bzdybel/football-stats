@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     ADD_LEAGUE_TO_FAVOURITE,
     REMOVE_LEAGUE_FROM_FAVOURITE,
-} from "../store/constants/actionTypes";
-import { LeagueType } from "../store/reducers/general";
+} from "../store/constants/constants";
+import { LeagueType, GeneralStateType } from "../store/reducers/general";
 import { Col, Row, Image } from "react-bootstrap";
 import { ThemeContext } from "../index";
+import { COLORS } from "../store/constants/colors";
 
 type ListItemProps = {
     title: LeagueType["name"];
@@ -18,7 +19,9 @@ type ListItemProps = {
 
 export const ListItem = ({ title, subtitle, image, id }: ListItemProps) => {
     const dispatch = useDispatch();
-    const { favouriteLeagues } = useSelector((state: any) => state.general);
+    const { favouriteLeagues } = useSelector(
+        (state: { general: GeneralStateType }) => state.general
+    );
     const { isDarkMode } = useContext(ThemeContext);
 
     const addToFavourites = useCallback((id: LeagueType["id"]) => {
@@ -34,7 +37,7 @@ export const ListItem = ({ title, subtitle, image, id }: ListItemProps) => {
     }, [favouriteLeagues, id]);
 
     return (
-        <Row xs={12} md={8} lg={4}>
+        <Row className="d-flex align-items-center" xs={12} md={8} lg={4}>
             <Col xs={4} md={2} lg={1}>
                 <Image
                     style={{ width: "5rem", minHeight: "5rem" }}
@@ -59,15 +62,15 @@ export const ListItem = ({ title, subtitle, image, id }: ListItemProps) => {
                 {isCurrentElementFavourite ? (
                     <Ionicons
                         name="heart-sharp"
-                        size={24}
-                        color="#fb3958"
+                        size={32}
+                        color={COLORS.red}
                         onPress={() => removeFromFavourites(id)}
                     />
                 ) : (
                     <Ionicons
                         onPress={() => addToFavourites(id)}
                         name="heart-outline"
-                        size={24}
+                        size={32}
                         color="#606060"
                     />
                 )}

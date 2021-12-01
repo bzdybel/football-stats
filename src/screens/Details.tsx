@@ -11,9 +11,13 @@ import {
     GET_SEASONS,
     GET_STANDINGS,
     API_URL,
-} from "../store/constants/actionTypes";
+} from "../store/constants/constants";
 import { LeagueType } from "../store/reducers/general";
-import { StandingType } from "../store/reducers/details";
+import {
+    StandingType,
+    SeasonType,
+    DetailsStateType,
+} from "../store/reducers/details";
 import { useSelector, useDispatch } from "react-redux";
 import StandingsList from "../components/Standings";
 import {
@@ -24,6 +28,8 @@ import {
     Badge,
 } from "react-bootstrap";
 import { ThemeContext } from "../index";
+import { COLORS } from "../store/constants/colors";
+import { Loader } from "../screens/Loader";
 
 export const api = axios.create();
 
@@ -55,10 +61,11 @@ export const Details = ({ route }: Props) => {
     const dispatch = useDispatch();
     const { isDarkMode } = useContext(ThemeContext);
     const { leagueDetails, seasons, standings } = useSelector(
-        (state: any) => state.details
+        (state: { details: DetailsStateType }) => state.details
     );
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoadingLeagues, setIsLoadingLeagues] = useState<boolean>(false);
 
     const fetchAvailableSeasons = useCallback(async () => {
         setIsLoading(true);
@@ -79,6 +86,7 @@ export const Details = ({ route }: Props) => {
     }, []);
 
     const fetchStandings = useCallback(async (season: number) => {
+        setIsLoadingLeagues(true);
         api.get(
             `${API_URL}/leagues/${route.params.id}/standings?season=${season}&sort=asc`
         ).then(function (response) {
@@ -86,7 +94,7 @@ export const Details = ({ route }: Props) => {
         });
     }, []);
 
-    const saveData = (data: LeagueType[] | {}) => {
+    const saveData = (data: LeagueType[] | null) => {
         dispatch({ type: GET_LEAGUE_DETAILS, payload: data });
         setIsLoading(false);
     };
@@ -98,6 +106,7 @@ export const Details = ({ route }: Props) => {
 
     const saveStandings = (data: Standings | { standings: {} }) => {
         dispatch({ type: GET_STANDINGS, payload: data.standings });
+        setIsLoadingLeagues(false);
     };
 
     const onSelectSeason = (season: { year: number }) => {
@@ -108,7 +117,7 @@ export const Details = ({ route }: Props) => {
         fetchLeagueDetails();
         fetchAvailableSeasons();
         return () => {
-            saveData({});
+            saveData(null);
             saveStandings({ standings: {} });
         };
     }, [fetchLeagueDetails, fetchAvailableSeasons]);
@@ -116,9 +125,7 @@ export const Details = ({ route }: Props) => {
     return (
         <Container style={{ minWidth: "100%" }} className="m-0 p-0 h-100">
             {isLoading ? (
-                <Container className="h-100 d-flex align-items-center justify-content-center text-warning">
-                    <ActivityIndicator size="large" color="#DAA520" />
-                </Container>
+                <Loader />
             ) : (
                 <ImageBackground
                     source={{
@@ -131,15 +138,18 @@ export const Details = ({ route }: Props) => {
                 >
                     <Container
                         className="h-100 m-0"
-                        style={{ background: "#000000c0", minWidth: "100%" }}
+                        style={{
+                            background: COLORS.darkSecondary,
+                            minWidth: "100%",
+                        }}
                     >
                         <Col
                             className="d-flex align-items-center justify-content-center"
                             xs={12}
                         >
-                            <h1 className="m-3">
+                            <h1 className="m-3 f">
                                 <Badge pill bg="warning">
-                                    {leagueDetails.name}
+                                    {leagueDetails?.name}
                                 </Badge>
                             </h1>
                         </Col>
@@ -160,7 +170,7 @@ export const Details = ({ route }: Props) => {
                                         overflow: "auto",
                                     }}
                                 >
-                                    {seasons.map((season: any) => {
+                                    {seasons.map((season: SeasonType) => {
                                         return (
                                             <Dropdown.Item
                                                 value={season.year}
@@ -173,6 +183,7 @@ export const Details = ({ route }: Props) => {
                                                     })
                                                 }
                                                 as="button"
+                                                key={`${season.displayName}-${season.year}`}
                                             >
                                                 {season.displayName}
                                             </Dropdown.Item>
@@ -187,7 +198,10 @@ export const Details = ({ route }: Props) => {
                                 className="d-flex align-items-center justify-content-center"
                                 xs={12}
                             >
-                                <StandingsList standings={standings} />
+                                <StandingsList
+                                    isLoading={isLoadingLeagues}
+                                    standings={standings}
+                                />
                             </Col>
                         ) : null}
                     </Container>
