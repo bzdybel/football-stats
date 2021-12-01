@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import { Col, Row, Image } from "react-bootstrap";
-import { Text } from "react-native";
+import { Text, StyleSheet, View, Image } from "react-native";
 import { headerStats } from "../store/constants/constants";
 import { ThemeContext } from "../index";
 import { StandingType } from "../store/reducers/details";
 import { Stat } from "./StandingBody";
+import { COLORS } from "../store/constants/colors";
 
 type Prop = {
     title: StandingType["team"]["name"];
@@ -18,63 +18,100 @@ export default function StandingHeader({ item }: { item: Prop }) {
     const { isDarkMode } = useContext(ThemeContext);
 
     return (
-        <Row className="w-100">
-            <Col xs={4} md={2} lg={2}>
-                <Image style={{ width: "5rem" }} src={item.image} />
-            </Col>
-            <Col xs={8} md={4} lg={4}>
-                <h5
-                    className={`${isDarkMode ? "text-secondary" : "text-dark"}`}
+        <View style={[styles.container]}>
+            <View style={{ flex: 1 }}>
+                <Image
+                    style={{ width: "5rem", height: "5rem" }}
+                    source={{ uri: item.image }}
+                />
+            </View>
+            <View style={{ flex: 1 }}>
+                <Text
+                    style={[
+                        isDarkMode ? styles.titleTextDark : styles.titleText,
+                    ]}
                 >
                     {item.title}
-                </h5>
-                <h6
-                    className={`${
-                        isDarkMode ? "text-light" : "text-secondary"
-                    }`}
+                </Text>
+                <Text
+                    style={[
+                        isDarkMode
+                            ? styles.secondTitleTextDark
+                            : styles.secondTitleText,
+                    ]}
                 >
                     {item.subtitle}
-                </h6>
-            </Col>
-            <Col xs={12} md={6} lg={6}>
-                <Row className="d-flex p-3">
+                </Text>
+            </View>
+            <View style={{ flex: 5 }}>
+                <View style={[styles.row]}>
                     {headerStats.map((name) => {
                         return (
-                            <Col key={`${item.id}-${name}`}>
-                                <Text>
-                                    <div
-                                        className={`${
-                                            isDarkMode
-                                                ? "text-secondary"
-                                                : "text-dark"
-                                        }`}
-                                    >
-                                        {name}
-                                    </div>
+                            <View
+                                style={{ marginLeft: "1rem" }}
+                                key={`${item.id}-${name}`}
+                            >
+                                <Text
+                                    style={[
+                                        isDarkMode
+                                            ? styles.titleTextDark
+                                            : styles.titleText,
+                                    ]}
+                                >
+                                    {name}
                                 </Text>
-                                <Text>
-                                    <div
-                                        className={`${
-                                            isDarkMode
-                                                ? "text-light"
-                                                : "text-secondary"
-                                        }`}
-                                    >
-                                        {
-                                            item.stats.find(
-                                                (e: {
-                                                    name: string;
-                                                    value: string;
-                                                }) => e.name == name
-                                            )?.value
-                                        }
-                                    </div>
+                                <Text
+                                    style={[
+                                        isDarkMode
+                                            ? styles.secondTitleTextDark
+                                            : styles.secondTitleText,
+                                    ]}
+                                >
+                                    {
+                                        item.stats.find(
+                                            (e: {
+                                                name: string;
+                                                value: string;
+                                            }) => e.name == name
+                                        )?.value
+                                    }
                                 </Text>
-                            </Col>
+                            </View>
                         );
                     })}
-                </Row>
-            </Col>
-        </Row>
+                </View>
+            </View>
+        </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        width: "100%",
+        flex: 1,
+        alignItems: "center",
+        flexDirection: "row",
+        borderRadius: 10,
+    },
+    row: {
+        flex: 1,
+        padding: "1rem",
+        flexWrap: "wrap",
+        flexDirection: "row-reverse",
+        alignItems: "center",
+    },
+    titleText: {
+        fontWeight: "bold",
+        color: COLORS.darkSecondary,
+    },
+    titleTextDark: {
+        fontWeight: "bold",
+        color: COLORS.white,
+    },
+    secondTitleTextDark: {
+        color: COLORS.whiteSmoke,
+    },
+    secondTitleText: {
+        color: COLORS.darkPrimary,
+    },
+});

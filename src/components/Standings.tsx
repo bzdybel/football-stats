@@ -1,12 +1,11 @@
 import React, { useMemo, useContext } from "react";
 import { StandingType, Stat } from "../store/reducers/details";
-import { Accordion, Container } from "react-bootstrap";
 import { ThemeContext } from "../index";
 import { COLORS } from "../store/constants/colors";
 import StandingBody from "./StandingBody";
 import StandingHeader from "./StandingHeader";
-import { ActivityIndicator } from "react-native";
 import { Loader } from "../screens/Loader";
+import { List } from "react-native-paper";
 
 export default function StandingsList({
     standings,
@@ -16,6 +15,9 @@ export default function StandingsList({
     isLoading: boolean;
 }) {
     const { isDarkMode } = useContext(ThemeContext);
+
+    const [expanded, setExpanded] = React.useState(true);
+    const handlePress = () => setExpanded(!expanded);
 
     const screens = useMemo(
         () =>
@@ -38,29 +40,24 @@ export default function StandingsList({
     return isLoading ? (
         <Loader />
     ) : (
-        <Accordion style={{ width: "90%" }}>
+        <List.Section style={{ width: "90%", borderRadius: 10 }}>
             {screens.map((item) => {
                 return (
-                    <Accordion.Item
+                    <List.Accordion
+                        onPress={handlePress}
                         style={{
-                            background: isDarkMode ? COLORS.darkSecondary : "",
+                            borderBottomColor: COLORS.border,
+                            borderBottomWidth: 3,
+                            backgroundColor: isDarkMode
+                                ? COLORS.darkPrimary
+                                : "",
                         }}
-                        eventKey={item.id}
-                        key={item.id}
+                        title={<StandingHeader item={item} />}
                     >
-                        <Accordion.Header
-                            bsPrefix={`${
-                                isDarkMode ? "accordion-custom-dark" : ""
-                            }`}
-                        >
-                            <StandingHeader item={item} />
-                        </Accordion.Header>
-                        <Accordion.Body>
-                            <StandingBody stats={item.stats} />
-                        </Accordion.Body>
-                    </Accordion.Item>
+                        <StandingBody stats={item.stats} />
+                    </List.Accordion>
                 );
             })}
-        </Accordion>
+        </List.Section>
     );
 }
