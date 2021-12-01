@@ -4,9 +4,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Provider } from "react-redux";
 import { Main } from "./navigation/Main";
 import { store } from "./store";
-import "./style.css";
-
-import "bootstrap/dist/css/bootstrap.min.css";
 
 export const ThemeContext = createContext({
     isDarkMode: false,

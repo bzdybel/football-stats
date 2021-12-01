@@ -5,6 +5,7 @@ import React, {
     useMemo,
     useState,
 } from "react";
+import { View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -20,7 +21,6 @@ import { ThemeContext } from "../index";
 import { COLORS } from "../store/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { Row } from "react-bootstrap";
 
 export const api = axios.create();
 
@@ -57,7 +57,7 @@ export const Main = () => {
 
     const switchMode = useMemo(() => {
         return (
-            <Row style={{ minWidth: "6rem" }}>
+            <View style={{ minWidth: "6rem" }}>
                 {isDarkMode ? (
                     <FontAwesome5
                         onClick={toggleDarkMode}
@@ -78,7 +78,7 @@ export const Main = () => {
                         style={{ cursor: "pointer" }}
                     />
                 )}
-            </Row>
+            </View>
         );
     }, [isDarkMode]);
     return (

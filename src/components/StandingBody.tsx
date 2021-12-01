@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { Col, Row, Image } from "react-bootstrap";
-import { Text } from "react-native";
 import { headerStats } from "../store/constants/constants";
 import { ThemeContext } from "../index";
+import { Text, StyleSheet, View } from "react-native";
+import { COLORS } from "../store/constants/colors";
 
 export type Stat = {
     name: string;
@@ -13,43 +13,70 @@ export default function StandingBody({ stats }: { stats: Stat[] }) {
     const { isDarkMode } = useContext(ThemeContext);
 
     return (
-        <Row className="d-flex p-3">
+        <View
+            style={[
+                styles.container,
+                isDarkMode ? styles.wrapperDark : styles.wrapperWhite,
+            ]}
+        >
             {stats
                 .filter((elem: Stat) => !headerStats.includes(elem.name))
                 .map((e: Stat) => {
                     return (
-                        <Col
+                        <View
                             key={`${e.name}-${e.value}`}
-                            className="pb-3"
-                            xs={6}
-                            md={4}
-                            lg={2}
+                            style={{ padding: "1rem" }}
                         >
-                            <Text>
-                                <div
-                                    className={`${
-                                        isDarkMode
-                                            ? "text-secondary"
-                                            : "text-dark"
-                                    }`}
-                                >
-                                    {e.name}
-                                </div>
+                            <Text
+                                style={[
+                                    isDarkMode
+                                        ? styles.titleTextDark
+                                        : styles.titleText,
+                                ]}
+                            >
+                                {e.name}
                             </Text>
-                            <Text>
-                                <div
-                                    className={`${
-                                        isDarkMode
-                                            ? "text-light"
-                                            : "text-secondary"
-                                    }`}
-                                >
-                                    {e?.value?.length > 0 ? e.value : "-"}
-                                </div>
+                            <Text
+                                style={[
+                                    isDarkMode
+                                        ? styles.secondTitleTextDark
+                                        : styles.secondTitleText,
+                                ]}
+                            >
+                                {e?.value?.length > 0 ? e.value : "-"}
                             </Text>
-                        </Col>
+                        </View>
                     );
                 })}
-        </Row>
+        </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        width: "100%",
+        flex: 1,
+        padding: 3,
+        flexWrap: "wrap",
+        flexDirection: "row",
+    },
+    titleText: {
+        fontWeight: "bold",
+        color: COLORS.darkSecondary,
+    },
+    titleTextDark: {
+        fontWeight: "bold",
+        color: COLORS.white,
+    },
+    secondTitleTextDark: {
+        color: COLORS.whiteSmoke,
+    },
+    secondTitleText: {
+        color: COLORS.darkPrimary,
+    },
+    wrapperDark: { backgroundColor: COLORS.black },
+    wrapperWhite: {
+        backgroundColor: COLORS.white,
+        opacity: 0.8,
+    },
+});

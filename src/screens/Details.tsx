@@ -4,7 +4,7 @@ import React, {
     useLayoutEffect,
     useContext,
 } from "react";
-import { ImageBackground, ActivityIndicator } from "react-native";
+import { ImageBackground, StyleSheet, View, Text } from "react-native";
 import axios from "axios";
 import {
     GET_LEAGUE_DETAILS,
@@ -20,16 +20,10 @@ import {
 } from "../store/reducers/details";
 import { useSelector, useDispatch } from "react-redux";
 import StandingsList from "../components/Standings";
-import {
-    Container,
-    Col,
-    Dropdown,
-    DropdownButton,
-    Badge,
-} from "react-bootstrap";
 import { ThemeContext } from "../index";
 import { COLORS } from "../store/constants/colors";
 import { Loader } from "../screens/Loader";
+import SelectDropdown from "react-native-select-dropdown";
 
 export const api = axios.create();
 
@@ -123,7 +117,7 @@ export const Details = ({ route }: Props) => {
     }, [fetchLeagueDetails, fetchAvailableSeasons]);
 
     return (
-        <Container style={{ minWidth: "100%" }} className="m-0 p-0 h-100">
+        <View style={[styles.detailsContainer]}>
             {isLoading ? (
                 <Loader />
             ) : (
@@ -134,79 +128,130 @@ export const Details = ({ route }: Props) => {
                             : leagueDetails?.logos?.light,
                     }}
                     resizeMode="contain"
-                    style={{ height: "100%" }}
+                    style={{ height: "100%", width: "100%" }}
                 >
-                    <Container
-                        className="h-100 m-0"
-                        style={{
-                            background: COLORS.darkSecondary,
-                            minWidth: "100%",
-                        }}
-                    >
-                        <Col
-                            className="d-flex align-items-center justify-content-center"
-                            xs={12}
-                        >
-                            <h1 className="m-3 f">
-                                <Badge pill bg="warning">
+                    <View style={[styles.container]}>
+                        <View style={[styles.titleWrapper]}>
+                            <h1 style={{ margin: "1rem" }}>
+                                <View style={[styles.badge]}>
                                     {leagueDetails?.name}
-                                </Badge>
+                                </View>
                             </h1>
-                        </Col>
-                        <Col
-                            className="d-flex align-items-center justify-content-center mb-3"
-                            xs={12}
-                        >
-                            <DropdownButton
-                                id="dropdown-item-button"
-                                title="Dropdown button"
-                                variant={`${
-                                    isDarkMode ? "secondary" : "primary"
-                                }`}
-                            >
-                                <Container
-                                    style={{
-                                        maxHeight: "30rem",
-                                        overflow: "auto",
-                                    }}
-                                >
-                                    {seasons.map((season: SeasonType) => {
-                                        return (
-                                            <Dropdown.Item
-                                                value={season.year}
-                                                onClick={(e) =>
-                                                    onSelectSeason({
-                                                        year: Number(
-                                                            //@ts-ignore
-                                                            e.target.value
-                                                        ),
-                                                    })
-                                                }
-                                                as="button"
-                                                key={`${season.displayName}-${season.year}`}
-                                            >
-                                                {season.displayName}
-                                            </Dropdown.Item>
-                                        );
-                                    })}
-                                </Container>
-                            </DropdownButton>
-                        </Col>
-
-                        {standings.length ? (
-                            <Col
-                                className="d-flex align-items-center justify-content-center"
-                                xs={12}
-                            >
-                                <StandingsList
-                                    isLoading={isLoadingLeagues}
-                                    standings={standings}
+                        </View>
+                        <View style={[styles.dropdownWrapper]}>
+                            <View style={styles.selectWrapper}>
+                                <SelectDropdown
+                                    data={seasons}
+                                    onSelect={(selectedItem) =>
+                                        onSelectSeason(selectedItem)
+                                    }
+                                    buttonTextAfterSelection={(selectedItem) =>
+                                        selectedItem.displayName
+                                    }
+                                    rowTextForSelection={(item) =>
+                                        item.displayName
+                                    }
+                                    dropdownStyle={styles.dropdown}
+                                    buttonStyle={
+                                        isDarkMode
+                                            ? styles.darkButton
+                                            : styles.buttonStyle
+                                    }
+                                    rowStyle={styles.rowStyle}
+                                    rowTextStyle={styles.rowTextStyle}
+                                    buttonTextStyle={styles.buttonTextStyle}
                                 />
-                            </Col>
-                        ) : null}
-                    </Container>
+
+                                {standings.length ? (
+                                    <View style={[styles.leagueList]}>
+                                        <StandingsList
+                                            isLoading={isLoadingLeagues}
+                                            standings={standings}
+                                        />
+                                    </View>
+                                ) : null}
+                            </View>
+                        </View>
+                    </View>
                 </ImageBackground>
             )}
-        </Container>
+        </View>
     );
 };
+
+const styles = StyleSheet.create({
+    detailsContainer: {
+        margin: 0,
+        padding: 0,
+        height: "100%",
+        width: "100%",
+    },
+    container: {
+        backgroundColor: COLORS.darkSecondary,
+        width: "100%",
+        height: "100%",
+        margin: 0,
+    },
+    titleWrapper: {
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    badge: {
+        backgroundColor: COLORS.yellow,
+        borderRadius: 20,
+        color: COLORS.white,
+        padding: "1rem",
+    },
+    dropdownWrapper: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 3,
+        width: "100%",
+    },
+    leagueList: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+    },
+    dropdown: {
+        paddingVertical: 10,
+        minWidth: 320,
+    },
+    darkButton: {
+        margin: "0 10rem",
+        minWidth: 320,
+        borderRadius: 10,
+        backgroundColor: COLORS.darkPrimary,
+        borderColor: COLORS.darkSecondary,
+        borderWidth: 3,
+        marginBottom: "1rem",
+    },
+    buttonStyle: {
+        margin: "0 10rem",
+        minWidth: 320,
+        borderRadius: 10,
+        backgroundColor: "transparent",
+        borderColor: COLORS.white,
+        borderWidth: 3,
+        marginBottom: "1rem",
+    },
+    rowStyle: {
+        padding: 10,
+        flex: 1,
+        justifyContent: "flex-start",
+        minWidth: "100%",
+    },
+    selectWrapper: {
+        flex: 1,
+        alignItems: "center",
+        width: "100%",
+    },
+    rowTextStyle: {
+        textAlign: "left",
+    },
+    buttonTextStyle: {
+        color: COLORS.yellow,
+    },
+});

@@ -6,18 +6,32 @@ import {
     REMOVE_LEAGUE_FROM_FAVOURITE,
 } from "../store/constants/constants";
 import { LeagueType, GeneralStateType } from "../store/reducers/general";
-import { Col, Row, Image } from "react-bootstrap";
 import { ThemeContext } from "../index";
 import { COLORS } from "../store/constants/colors";
+import {
+    View,
+    StyleSheet,
+    Text,
+    Image,
+    TouchableHighlight,
+    TouchableWithoutFeedback,
+} from "react-native";
 
 type ListItemProps = {
     title: LeagueType["name"];
     subtitle: LeagueType["abbr"];
     image: LeagueType["logos"];
     id: LeagueType["id"];
+    onPress: () => void;
 };
 
-export const ListItem = ({ title, subtitle, image, id }: ListItemProps) => {
+export const ListItem = ({
+    title,
+    subtitle,
+    image,
+    id,
+    onPress,
+}: ListItemProps) => {
     const dispatch = useDispatch();
     const { favouriteLeagues } = useSelector(
         (state: { general: GeneralStateType }) => state.general
@@ -37,28 +51,32 @@ export const ListItem = ({ title, subtitle, image, id }: ListItemProps) => {
     }, [favouriteLeagues, id]);
 
     return (
-        <Row className="d-flex align-items-center" xs={12} md={8} lg={4}>
-            <Col xs={4} md={2} lg={1}>
+        <TouchableWithoutFeedback onPress={onPress}>
+            <View style={[styles.rowStyles]}>
                 <Image
-                    style={{ width: "5rem", minHeight: "5rem" }}
-                    src={isDarkMode ? image.dark : image.light}
+                    style={[styles.image]}
+                    source={{ uri: isDarkMode ? image.dark : image.light }}
                 />
-            </Col>
-            <Col xs={7} md={4} lg={3}>
-                <h5
-                    className={`${isDarkMode ? "text-secondary" : "text-dark"}`}
-                >
-                    {title}
-                </h5>
-                <h6
-                    className={`${
-                        isDarkMode ? "text-light" : "text-secondary"
-                    }`}
-                >
-                    {subtitle}
-                </h6>
-            </Col>
-            <Col className="d-flex align-items-center" xs={1}>
+                <View style={[styles.wrapper]}>
+                    <Text
+                        style={[
+                            isDarkMode
+                                ? styles.titleTextDark
+                                : styles.titleText,
+                        ]}
+                    >
+                        {title}
+                    </Text>
+                    <Text
+                        style={[
+                            isDarkMode
+                                ? styles.secondTitleTextDark
+                                : styles.secondTitleText,
+                        ]}
+                    >
+                        {subtitle}
+                    </Text>
+                </View>
                 {isCurrentElementFavourite ? (
                     <Ionicons
                         name="heart-sharp"
@@ -71,10 +89,49 @@ export const ListItem = ({ title, subtitle, image, id }: ListItemProps) => {
                         onPress={() => addToFavourites(id)}
                         name="heart-outline"
                         size={32}
-                        color="#606060"
+                        color={COLORS.darkPrimary}
                     />
                 )}
-            </Col>
-        </Row>
+            </View>
+        </TouchableWithoutFeedback>
     );
 };
+
+const styles = StyleSheet.create({
+    rowStyles: {
+        flex: 1,
+        flexDirection: "row",
+        alignItems: "center",
+        padding: "1rem",
+        cursor: "pointer",
+    },
+    titleText: {
+        fontWeight: "bold",
+        color: COLORS.darkSecondary,
+    },
+    titleTextDark: {
+        fontWeight: "bold",
+        color: COLORS.white,
+    },
+    secondTitleTextDark: {
+        color: COLORS.whiteSmoke,
+    },
+    secondTitleText: {
+        color: COLORS.darkPrimary,
+    },
+    image: {
+        height: 75,
+        width: 75,
+        marginRight: 15,
+    },
+    wrapper: {
+        minWidth: 300,
+    },
+
+    separator: {
+        height: StyleSheet.hairlineWidth,
+        backgroundColor: COLORS.border,
+    },
+});
+
+export const ListSeparator = () => <View style={styles.separator} />;
