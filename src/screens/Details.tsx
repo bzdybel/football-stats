@@ -4,7 +4,7 @@ import React, {
     useLayoutEffect,
     useContext,
 } from "react";
-import { ImageBackground, StyleSheet, View, Text } from "react-native";
+import { ImageBackground, StyleSheet, View } from "react-native";
 import axios from "axios";
 import {
     GET_LEAGUE_DETAILS,

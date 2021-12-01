@@ -4,7 +4,6 @@ import { ThemeContext } from "../index";
 import { COLORS } from "../store/constants/colors";
 import StandingBody from "./StandingBody";
 import StandingHeader from "./StandingHeader";
-import { ActivityIndicator } from "react-native";
 import { Loader } from "../screens/Loader";
 import { List } from "react-native-paper";
 

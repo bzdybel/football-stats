@@ -89,7 +89,7 @@ export const ListItem = ({
                         onPress={() => addToFavourites(id)}
                         name="heart-outline"
                         size={32}
-                        color={COLORS.darkPrimary}
+                        color={isDarkMode ? COLORS.red : COLORS.darkPrimary}
                     />
                 )}
             </View>

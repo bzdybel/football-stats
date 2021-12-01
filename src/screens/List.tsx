@@ -24,13 +24,6 @@ import {
 type Props = {
     navigation: StackNavigationProp<MainStackParams, "Leagues">;
 };
-type League = {
-    title: LeagueType["name"];
-    subtitle: LeagueType["abbr"];
-    target: LeagueType["slug"];
-    image: LeagueType["logos"];
-    id: LeagueType["id"];
-};
 
 export const List = ({ navigation }: Props) => {
     const dispatch = useDispatch();
@@ -90,44 +83,45 @@ export const List = ({ navigation }: Props) => {
             style={isDarkMode ? styles.containerDark : styles.container}
             data={screens}
             keyExtractor={(item) => item.title}
-            renderItem={({ item }) =>
-                screens.length ? (
-                    <ListItem
-                        title={item.title}
-                        subtitle={item.subtitle}
-                        image={item.image}
-                        onPress={() =>
-                            //@ts-ignore
-                            navigation.navigate(item.target, {
-                                id: item.id,
-                            })
-                        }
-                        id={item.id}
-                    />
-                ) : (
-                    <View
-                        style={{ maxHeight: "15rem" }}
-                        // className="w-100 d-flex flex-direction-column align-items-center justify-content-center"
-                    >
-                        <View>
-                            <Entypo
-                                name="traffic-cone"
-                                size={86}
-                                color={COLORS.yellow}
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                }}
-                            />
-                            <Text
-                            //  className="d-flex justify-content-center"
-                            >
-                                There is no data here
-                            </Text>
-                        </View>
+            ListEmptyComponent={
+                <View style={{ height: "15rem" }}>
+                    <View style={[styles.empty]}>
+                        <Entypo
+                            name="traffic-cone"
+                            size={86}
+                            color={COLORS.yellow}
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                            }}
+                        />
+                        <Text
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                fontSize: 34,
+                                color: isDarkMode ? COLORS.white : COLORS.black,
+                            }}
+                        >
+                            There is no data here
+                        </Text>
                     </View>
-                )
+                </View>
             }
+            renderItem={({ item }) => (
+                <ListItem
+                    title={item.title}
+                    subtitle={item.subtitle}
+                    image={item.image}
+                    onPress={() =>
+                        //@ts-ignore
+                        navigation.navigate(item.target, {
+                            id: item.id,
+                        })
+                    }
+                    id={item.id}
+                />
+            )}
             ItemSeparatorComponent={ListSeparator}
             ListHeaderComponent={
                 <View
@@ -216,6 +210,7 @@ const styles = StyleSheet.create({
         padding: 15,
         backgroundColor: COLORS.darkSecondary,
         borderColor: COLORS.border,
+        color: COLORS.white,
     },
     baseRow: {
         flex: 1,
@@ -252,5 +247,10 @@ const styles = StyleSheet.create({
         padding: "0.5rem",
         borderWidth: 2,
         borderColor: COLORS.yellow,
+    },
+    empty: {
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "center",
     },
 });
