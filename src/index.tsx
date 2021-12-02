@@ -12,8 +12,8 @@ export const ThemeContext = createContext({
 
 export default function App() {
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
-    const toggleDarkMode = () => setIsDarkMode((prevState) => !prevState);
     return (
         <Provider store={store}>
             <StatusBar style="auto" />

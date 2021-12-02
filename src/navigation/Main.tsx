@@ -57,25 +57,29 @@ export const Main = () => {
 
     const switchMode = useMemo(() => {
         return (
-            <View style={{ minWidth: "6rem" }}>
+            <View
+                style={{
+                    minWidth: 20,
+                    minHeight: 32,
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 12,
+                }}
+            >   
                 {isDarkMode ? (
                     <FontAwesome5
-                        onClick={toggleDarkMode}
+                        onPress={() => toggleDarkMode()}
                         name="lightbulb"
-                        size={44}
+                        size={32}
                         color={COLORS.yellow}
-                        style={{
-                            cursor: "pointer",
-                        }}
                     />
                 ) : (
                     <Ionicons
-                        onClick={toggleDarkMode}
+                        onPress={() => toggleDarkMode()}
                         name="moon"
-                        size={44}
+                        size={32}
                         color={COLORS.darkPrimary}
-                        //@ts-ignore
-                        style={{ cursor: "pointer" }}
                     />
                 )}
             </View>
@@ -87,13 +91,15 @@ export const Main = () => {
                 options={{
                     title: "Leagues",
                     headerTitleStyle: {
-                        color: isDarkMode ? COLORS.whiteSmoke : "",
+                        color: isDarkMode ? COLORS.whiteSmoke : COLORS.black,
                     },
                     headerStyle: {
                         backgroundColor: isDarkMode
                             ? COLORS.darkPrimary
                             : COLORS.whiteSmoke,
-                        borderBottomColor: isDarkMode ? COLORS.border : "",
+                        borderBottomColor: isDarkMode
+                            ? COLORS.border
+                            : COLORS.border,
                     },
                     headerRight: () => switchMode,
                 }}
@@ -109,7 +115,9 @@ export const Main = () => {
                         options={{
                             headerTitle: e.name,
                             headerTitleStyle: {
-                                color: isDarkMode ? COLORS.whiteSmoke : "",
+                                color: isDarkMode
+                                    ? COLORS.whiteSmoke
+                                    : COLORS.black,
                             },
                             headerStyle: {
                                 backgroundColor: isDarkMode
@@ -117,7 +125,7 @@ export const Main = () => {
                                     : COLORS.whiteSmoke,
                                 borderBottomColor: isDarkMode
                                     ? COLORS.border
-                                    : "",
+                                    : COLORS.border,
                             },
                             cardStyle: {
                                 backgroundColor: isDarkMode

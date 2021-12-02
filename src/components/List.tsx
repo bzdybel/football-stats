@@ -14,7 +14,6 @@ import {
     Text,
     Image,
     TouchableHighlight,
-    TouchableWithoutFeedback,
 } from "react-native";
 
 type ListItemProps = {
@@ -51,7 +50,7 @@ export const ListItem = ({
     }, [favouriteLeagues, id]);
 
     return (
-        <TouchableWithoutFeedback onPress={onPress}>
+        <TouchableHighlight activeOpacity={0.6} onPress={onPress}>
             <View style={[styles.rowStyles]}>
                 <Image
                     style={[styles.image]}
@@ -77,23 +76,25 @@ export const ListItem = ({
                         {subtitle}
                     </Text>
                 </View>
-                {isCurrentElementFavourite ? (
-                    <Ionicons
-                        name="heart-sharp"
-                        size={32}
-                        color={COLORS.red}
-                        onPress={() => removeFromFavourites(id)}
-                    />
-                ) : (
-                    <Ionicons
-                        onPress={() => addToFavourites(id)}
-                        name="heart-outline"
-                        size={32}
-                        color={isDarkMode ? COLORS.red : COLORS.darkPrimary}
-                    />
-                )}
+                <View>
+                    {isCurrentElementFavourite ? (
+                        <Ionicons
+                            name="heart-sharp"
+                            size={32}
+                            color={COLORS.red}
+                            onPress={() => removeFromFavourites(id)}
+                        />
+                    ) : (
+                        <Ionicons
+                            onPress={() => addToFavourites(id)}
+                            name="heart-outline"
+                            size={32}
+                            color={isDarkMode ? COLORS.red : COLORS.darkPrimary}
+                        />
+                    )}
+                </View>
             </View>
-        </TouchableWithoutFeedback>
+        </TouchableHighlight>
     );
 };
 
@@ -102,8 +103,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         alignItems: "center",
-        padding: "1rem",
-        cursor: "pointer",
+        padding: 16,
     },
     titleText: {
         fontWeight: "bold",
@@ -125,7 +125,8 @@ const styles = StyleSheet.create({
         marginRight: 15,
     },
     wrapper: {
-        minWidth: 300,
+        maxWidth: 300,
+        flex: 6,
     },
 
     separator: {
