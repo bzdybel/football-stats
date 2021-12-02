@@ -25,7 +25,7 @@ export default function StandingBody({ stats }: { stats: Stat[] }) {
                     return (
                         <View
                             key={`${e.name}-${e.value}`}
-                            style={{ padding: "1rem" }}
+                            style={{ padding: 16 }}
                         >
                             <Text
                                 style={[
@@ -54,11 +54,9 @@ export default function StandingBody({ stats }: { stats: Stat[] }) {
 
 const styles = StyleSheet.create({
     container: {
-        width: "100%",
-        flex: 1,
-        padding: 3,
         flexWrap: "wrap",
         flexDirection: "row",
+        minHeight: 64,
     },
     titleText: {
         fontWeight: "bold",

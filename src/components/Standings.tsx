@@ -40,17 +40,18 @@ export default function StandingsList({
     return isLoading ? (
         <Loader />
     ) : (
-        <List.Section style={{ width: "90%", borderRadius: 10 }}>
+        <List.Section style={{ width: "95%", borderRadius: 10 }}>
             {screens.map((item) => {
                 return (
                     <List.Accordion
+                        key={item.id}
                         onPress={handlePress}
                         style={{
                             borderBottomColor: COLORS.border,
                             borderBottomWidth: 3,
                             backgroundColor: isDarkMode
                                 ? COLORS.darkPrimary
-                                : "",
+                                : COLORS.whiteSmoke,
                         }}
                         title={<StandingHeader item={item} />}
                     >

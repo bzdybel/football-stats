@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 //actions
 export const GET_ALL_LEAGUES_INFORMATION = "GET_ALL_LEAGUES_INFORMATION";
 export const ADD_LEAGUE_TO_FAVOURITE = "ADD_LEAGUE_TO_FAVOURITE";
@@ -11,4 +13,6 @@ export const GET_STANDINGS = "GET_STANDINGS";
 export const API_URL = "https://api-football-standings.azharimm.site";
 
 //constants
-export const headerStats = ["Wins", "Losses", "Draws", "Overall"];
+export const headerStats = Platform.OS
+    ? ["Overall"]
+    : ["Wins", "Losses", "Draws", "Overall"];

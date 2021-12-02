@@ -19,13 +19,10 @@ export default function StandingHeader({ item }: { item: Prop }) {
 
     return (
         <View style={[styles.container]}>
-            <View style={{ flex: 1 }}>
-                <Image
-                    style={{ width: "5rem", height: "5rem" }}
-                    source={{ uri: item.image }}
-                />
+            <View style={{ flex: 1, maxWidth: 50 }}>
+                <Image style={[styles.image]} source={{ uri: item.image }} />
             </View>
-            <View style={{ flex: 1 }}>
+            <View style={{ maxHeight: 16, flex: 3, minWidth: 20 }}>
                 <Text
                     style={[
                         isDarkMode ? styles.titleTextDark : styles.titleText,
@@ -43,44 +40,35 @@ export default function StandingHeader({ item }: { item: Prop }) {
                     {item.subtitle}
                 </Text>
             </View>
-            <View style={{ flex: 5 }}>
-                <View style={[styles.row]}>
-                    {headerStats.map((name) => {
-                        return (
-                            <View
-                                style={{ marginLeft: "1rem" }}
-                                key={`${item.id}-${name}`}
-                            >
-                                <Text
-                                    style={[
-                                        isDarkMode
-                                            ? styles.titleTextDark
-                                            : styles.titleText,
-                                    ]}
-                                >
-                                    {name}
-                                </Text>
-                                <Text
-                                    style={[
-                                        isDarkMode
-                                            ? styles.secondTitleTextDark
-                                            : styles.secondTitleText,
-                                    ]}
-                                >
-                                    {
-                                        item.stats.find(
-                                            (e: {
-                                                name: string;
-                                                value: string;
-                                            }) => e.name == name
-                                        )?.value
-                                    }
-                                </Text>
-                            </View>
-                        );
-                    })}
-                </View>
-            </View>
+            {headerStats.map((name) => {
+                return (
+                    <View style={{ marginLeft: 16 }} key={`${item.id}-${name}`}>
+                        <Text
+                            style={[
+                                isDarkMode
+                                    ? styles.titleTextDark
+                                    : styles.titleText,
+                            ]}
+                        >
+                            {name}
+                        </Text>
+                        <Text
+                            style={[
+                                isDarkMode
+                                    ? styles.secondTitleTextDark
+                                    : styles.secondTitleText,
+                            ]}
+                        >
+                            {
+                                item.stats.find(
+                                    (e: { name: string; value: string }) =>
+                                        e.name == name
+                                )?.value
+                            }
+                        </Text>
+                    </View>
+                );
+            })}
         </View>
     );
 }
@@ -89,13 +77,12 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         flex: 1,
-        alignItems: "center",
         flexDirection: "row",
         borderRadius: 10,
+        maxHeight: 32,
     },
     row: {
-        flex: 1,
-        padding: "1rem",
+        padding: 16,
         flexWrap: "wrap",
         flexDirection: "row-reverse",
         alignItems: "center",
@@ -113,5 +100,10 @@ const styles = StyleSheet.create({
     },
     secondTitleText: {
         color: COLORS.darkPrimary,
+    },
+    image: {
+        height: 45,
+        width: 45,
+        marginRight: 15,
     },
 });

@@ -4,7 +4,13 @@ import React, {
     useLayoutEffect,
     useContext,
 } from "react";
-import { ImageBackground, StyleSheet, View } from "react-native";
+import {
+    ImageBackground,
+    StyleSheet,
+    View,
+    Text,
+    ScrollView,
+} from "react-native";
 import axios from "axios";
 import {
     GET_LEAGUE_DETAILS,
@@ -132,11 +138,9 @@ export const Details = ({ route }: Props) => {
                 >
                     <View style={[styles.container]}>
                         <View style={[styles.titleWrapper]}>
-                            <h1 style={{ margin: "1rem" }}>
-                                <View style={[styles.badge]}>
-                                    {leagueDetails?.name}
-                                </View>
-                            </h1>
+                            <Text style={[styles.badge]}>
+                                {leagueDetails?.name}
+                            </Text>
                         </View>
                         <View style={[styles.dropdownWrapper]}>
                             <View style={styles.selectWrapper}>
@@ -164,10 +168,20 @@ export const Details = ({ route }: Props) => {
 
                                 {standings.length ? (
                                     <View style={[styles.leagueList]}>
-                                        <StandingsList
-                                            isLoading={isLoadingLeagues}
-                                            standings={standings}
-                                        />
+                                        <ScrollView
+                                            style={{
+                                                width: "100%",
+                                                flex: 1,
+                                            }}
+                                            contentContainerStyle={{
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <StandingsList
+                                                isLoading={isLoadingLeagues}
+                                                standings={standings}
+                                            />
+                                        </ScrollView>
                                     </View>
                                 ) : null}
                             </View>
@@ -193,6 +207,7 @@ const styles = StyleSheet.create({
         margin: 0,
     },
     titleWrapper: {
+        padding: 16,
         alignItems: "center",
         justifyContent: "center",
     },
@@ -200,7 +215,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.yellow,
         borderRadius: 20,
         color: COLORS.white,
-        padding: "1rem",
+        padding: 16,
     },
     dropdownWrapper: {
         flex: 1,
@@ -212,30 +227,29 @@ const styles = StyleSheet.create({
     leagueList: {
         flex: 1,
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         width: "100%",
+        maxHeight: "100%",
     },
     dropdown: {
         paddingVertical: 10,
         minWidth: 320,
     },
     darkButton: {
-        margin: "0 10rem",
         minWidth: 320,
         borderRadius: 10,
         backgroundColor: COLORS.darkPrimary,
         borderColor: COLORS.darkSecondary,
         borderWidth: 3,
-        marginBottom: "1rem",
+        marginBottom: 16,
     },
     buttonStyle: {
-        margin: "0 10rem",
         minWidth: 320,
         borderRadius: 10,
         backgroundColor: "transparent",
         borderColor: COLORS.white,
         borderWidth: 3,
-        marginBottom: "1rem",
+        marginBottom: 16,
     },
     rowStyle: {
         padding: 10,

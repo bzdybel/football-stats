@@ -84,28 +84,20 @@ export const List = ({ navigation }: Props) => {
             data={screens}
             keyExtractor={(item) => item.title}
             ListEmptyComponent={
-                <View style={{ height: "15rem" }}>
-                    <View style={[styles.empty]}>
-                        <Entypo
-                            name="traffic-cone"
-                            size={86}
-                            color={COLORS.yellow}
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                            }}
-                        />
-                        <Text
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                fontSize: 34,
-                                color: isDarkMode ? COLORS.white : COLORS.black,
-                            }}
-                        >
-                            There is no data here
-                        </Text>
-                    </View>
+                <View style={[styles.empty]}>
+                    <Entypo
+                        name="traffic-cone"
+                        size={86}
+                        color={COLORS.yellow}
+                    />
+                    <Text
+                        style={{
+                            fontSize: 34,
+                            color: isDarkMode ? COLORS.white : COLORS.black,
+                        }}
+                    >
+                        There is no data here
+                    </Text>
                 </View>
             }
             renderItem={({ item }) => (
@@ -156,7 +148,10 @@ export const List = ({ navigation }: Props) => {
                         </Text>
                     </TouchableHighlight>
                     <TextInput
-                        style={[isDarkMode ? styles.inputDark : styles.input]}
+                        style={[
+                            styles.inputBase,
+                            isDarkMode ? styles.inputDark : styles.input,
+                        ]}
                         onChangeText={(e) => onChangeText(e)}
                         value={filterValue}
                     />
@@ -181,7 +176,10 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         elevation: 3,
         marginLeft: 15,
-        width: 200,
+        width: "45%",
+    },
+    inputBase: {
+        width: "45%",
     },
     text: {
         fontSize: 16,
@@ -202,6 +200,7 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: COLORS.white,
         borderColor: COLORS.yellow,
+        color: COLORS.black,
     },
     inputDark: {
         height: 40,
@@ -218,6 +217,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderBottomWidth: StyleSheet.hairlineWidth,
         padding: 10,
+        width: "100%",
     },
     row: {
         borderBottomColor: COLORS.border,
@@ -230,27 +230,29 @@ const styles = StyleSheet.create({
     dark: {
         backgroundColor: COLORS.darkPrimary,
         borderColor: COLORS.border,
-        padding: "0.5rem",
+        padding: 3,
         borderWidth: 2,
     },
     outlineDark: {
         backgroundColor: COLORS.darkSecondary,
         borderColor: COLORS.border,
-        padding: "0.5rem",
+        padding: 3,
         borderWidth: 2,
     },
     warning: {
-        padding: "0.5rem",
+        padding: 3,
         backgroundColor: COLORS.yellow,
     },
     outlineWarning: {
-        padding: "0.5rem",
+        padding: 3,
         borderWidth: 2,
         borderColor: COLORS.yellow,
+        backgroundColor: COLORS.white,
     },
     empty: {
         flex: 1,
         flexDirection: "column",
         justifyContent: "center",
+        alignItems: "center",
     },
 });
